@@ -1,6 +1,9 @@
 ﻿import cv2
 import numpy as np
+from moviepy.video.io.VideoFileClip import VideoFileClip
+
 from Pipeline import Pipeline
+from AudioMixer import AudioMixer
 def generate_video_from_frames(pipeline, output_file, fps=30):
     """
     Generates a video from in-memory stored frames.
@@ -9,7 +12,7 @@ def generate_video_from_frames(pipeline, output_file, fps=30):
     :param output_file: Output video file path (e.g., 'output.mp4')
     :param fps: Frames per second
     """
-    frame0 = pipeline.__next__()
+    frame0 = pipeline.baseFrame
 
     # Get frame dimensions
     height, width, layers = frame0.shape
@@ -23,6 +26,7 @@ def generate_video_from_frames(pipeline, output_file, fps=30):
         out.write(frame)
 
     out.release()
+
     print(f"Video saved as {output_file}")
 curFrame = 0
 def next(frame):
@@ -33,8 +37,13 @@ def next(frame):
     return np.random.randint(0, 256, (480, 640, 3), dtype=np.uint8)
 # Example usage
 if __name__ == "__main__":
-    pipeline = Pipeline()
+    fps = 30
+    mixer = AudioMixer(fps)
+    pipeline = Pipeline(mixer)
     pipeline.loadFromConfig()
 
-
     generate_video_from_frames(pipeline, 'output.mp4')
+    audio = mixer.getFullClip()
+    video = VideoFileClip('output.mp4')
+    video.audio = audio.subclip(0,video.duration)
+    video.write_videofile('output.mp4')

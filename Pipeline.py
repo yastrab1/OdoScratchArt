@@ -1,12 +1,18 @@
-﻿class Pipeline():
-    def __init__(self):
+﻿from AudioMixer import AudioMixer
+def createPipelineFunc(pipelineObj, funcRaw):
+    return lambda x: funcRaw(pipelineObj, x)
+
+class Pipeline():
+    def __init__(self,mixer:AudioMixer):
         self.functions = []
         self.baseFrame = None
+        self.mixer = mixer
 
     def __next__(self):
         frame = None
         for function in self.functions:
-            frame = function(frame)
+            frame = function[0](frame)
+            self.mixer.finishFrame()
         return frame
 
     def __iter__(self):
@@ -23,11 +29,12 @@
             pipelineModuleName = split[0]
             pipelineClassName = pipelineModuleName[0].upper() + pipelineModuleName[1:]
             pipelineFuncName = split[1]
-
+            print(pipelineModuleName,pipelineClassName,pipelineFuncName)
             pipelineModule = __import__(pipelineModuleName)
             pipelineClass = getattr(pipelineModule, pipelineClassName)
-            pipelineObj = pipelineClass(self.baseFrame)
-            pipelineFunc = lambda x: getattr(pipelineClass, pipelineFuncName)(pipelineObj, x)
-            self.functions.append(pipelineFunc)
+            pipelineObj = pipelineClass(self.baseFrame,self.mixer)
+            funcRaw = getattr(pipelineClass, pipelineFuncName)
+            pipelineFunc = createPipelineFunc(pipelineObj,funcRaw)
+            self.functions.append([pipelineFunc,pipelineFuncName])
             if(i == 0):
                 self.baseFrame = pipelineFunc(None)
