@@ -4,6 +4,8 @@ from moviepy.video.io.VideoFileClip import VideoFileClip
 
 from Pipeline import Pipeline
 from AudioMixer import AudioMixer
+
+
 def generate_video_from_frames(pipeline, output_file, fps=30):
     """
     Generates a video from in-memory stored frames.
@@ -21,21 +23,15 @@ def generate_video_from_frames(pipeline, output_file, fps=30):
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec for .mp4 files
     out = cv2.VideoWriter(output_file, fourcc, fps, (width, height))
 
-    out.write(frame0)
+    # out.write(frame0)
     for frame in pipeline:
         out.write(frame)
 
     out.release()
 
     print(f"Video saved as {output_file}")
-curFrame = 0
-def next(frame):
-    global curFrame
-    curFrame = curFrame + 1
-    if curFrame == 1000:
-        raise StopIteration
-    return np.random.randint(0, 256, (480, 640, 3), dtype=np.uint8)
-# Example usage
+
+
 if __name__ == "__main__":
     fps = 30
     mixer = AudioMixer(fps)
@@ -43,7 +39,7 @@ if __name__ == "__main__":
     pipeline.loadFromConfig()
 
     generate_video_from_frames(pipeline, 'output.mp4')
-    audio = mixer.getFullClip()
-    video = VideoFileClip('output.mp4')
-    video.audio = audio.subclip(0,video.duration)
-    video.write_videofile('output.mp4')
+    # audio = mixer.getFullClip()
+    # video = VideoFileClip('output.mp4')
+    # video.audio = audio.subclip(0,video.duration)
+    # video.write_videofile('output.mp4')

@@ -8,5 +8,6 @@ class BaseFrame:
 
     def baseImg(self,frame):
         self.curFrame +=1
-
+        if self.curFrame == 500:
+            raise StopIteration
         return self.img
