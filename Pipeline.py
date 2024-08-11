@@ -12,7 +12,7 @@ class Pipeline():
         frame = None
         for function in self.functions:
             frame = function[0](frame)
-            self.mixer.finishFrame()
+        self.mixer.finishFrame()
         return frame
 
     def __iter__(self):

@@ -3,8 +3,10 @@
 import cv2
 import numpy
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import ImageFilter
 from ultralytics import SAM
+
+from ImageUtils import cv2ToPil, pilToCv2
 
 
 def normalize(v):
@@ -14,20 +16,7 @@ def normalize(v):
     return v / norm
 
 
-def cv2ToPil(cv2_image):
-    img = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
-    im_pil = Image.fromarray(img)
-    return im_pil
-
-
-def pilToCv2(im_pil):
-    im_np = np.asarray(im_pil)
-    im_np = cv2.cvtColor(im_np, cv2.COLOR_RGB2BGR)
-    return im_np
-
-
 def findFirstPointInMaskToStartScraping(maskPoints, angle):
-    print(angle)
     inverse = 360 - angle
     rotMatrix = np.array([[np.cos(inverse), -np.sin(inverse)],
                           [np.sin(inverse), np.cos(inverse)]])

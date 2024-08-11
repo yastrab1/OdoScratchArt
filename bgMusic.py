@@ -23,7 +23,7 @@ class BgMusic:
             self.curClip = random.choice(self.clips)
             self.mixer.registerClip(self.curClip)
             self.lastClipFrame = self.curFrame
-        if self.curClip.fps*self.curClip.duration + self.lastClipFrame == len(self.clips):
+        if self.curFrame - self.lastClipFrame == self.curClip.fps*self.curClip.duration:
             self.curClip = random.choice(self.clips)
             self.mixer.registerClip(self.curClip)
             self.lastClipFrame = self.curFrame

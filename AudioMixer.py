@@ -2,7 +2,7 @@
 
 
 class AudioMixer:
-    def __init__(self, fps):
+    def __init__(self, fps=30):
         self.clips = []
         self.fps = fps
         self.currentFrame = 0
@@ -11,8 +11,8 @@ class AudioMixer:
         self.currentFrame += 1
 
     def registerClip(self, clip: AudioClip):
-        print("Clipped")
-        clip.start = self.currentFrame / self.fps
+        print("Clipped",self.currentFrame)
+        clip = clip.set_start(self.currentFrame/ self.fps)
         self.clips.append(clip)
 
     def getFullClip(self):
